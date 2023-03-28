@@ -108,13 +108,25 @@ def bot_move(bot, board, bot_turn):
                     edge3 = [8,7,3,0]
                     edge4 = [6,3,1,2]
                     if opp_moves[0] in edge1 and opp_moves[1] in edge1:
-                        move = 0
+                        if opp_moves[0] == 0 or opp_moves[1] == 0:
+                            move = 8
+                        else:
+                            move = 0
                     if opp_moves[0] in edge2 and opp_moves[1] in edge2:
-                        move = 6
+                        if opp_moves[0] == 2 or opp_moves[1] == 2:
+                            move = 6
+                        else:
+                            move = 2
                     if opp_moves[0] in edge3 and opp_moves[1] in edge3:
-                        move = 8
+                        if opp_moves[0] == 0 or opp_moves[1] == 0:
+                            move = 8
+                        else:
+                            move = 0
                     if opp_moves[0] in edge4 and opp_moves[1] in edge4:
-                        move = 2
+                        if opp_moves[0] == 2 or opp_moves[1] == 2:
+                            move = 6
+                        else:
+                            move = 2
                     if opp_moves[0] in corners and opp_moves[1] in corners:
                         for edge in edges:
                             if edge in available_moves:
