@@ -38,6 +38,28 @@ def opposite_corner(corner):
         opp = 0
     return opp
 
+def right_corner(corner):
+    if corner == 0:
+        opp = 2
+    if corner == 2:
+        opp = 8
+    if corner == 8:
+        opp = 6
+    if corner == 6:
+        opp = 0
+    return opp
+
+def left_corner(corner):
+    if corner == 0:
+        opp = 6
+    if corner == 6:
+        opp = 8
+    if corner == 8:
+        opp = 2
+    if corner == 2:
+        opp = 0
+    return opp
+
 def win_or_block(board,bot,opp,move,available_moves):
     win_combinations = [(0, 1, 2), (3, 4, 5), (6, 7, 8),  # horizontal
                         (0, 3, 6), (1, 4, 7), (2, 5, 8),  # vertical
@@ -127,11 +149,12 @@ def bot_move(bot, board, bot_turn):
                             move = 6
                         else:
                             move = 2
-                    if opp_moves[0] in corners and opp_moves[1] in corners:
-                        for edge in edges:
-                            if edge in available_moves:
-                                edges.remove(edge)
-                        move = random.choice(edges)
+                    if opp_moves[1] != right_corner(opp_moves[0]) and opp_moves[1] != left_corner(opp_moves[0]):
+                        if opp_moves[0] in corners and opp_moves[1] in corners:
+                            for edge in edges:
+                                if edge in available_moves:
+                                    edges.remove(edge)
+                            move = random.choice(edges)
                     else:
                         move = win_or_block(board, bot, opp, move, available_moves)
         else:
