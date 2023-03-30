@@ -28,6 +28,7 @@ def get_move(player, board):
         print("Invalid move. Try again.")
 
 def opposite_corner(corner):
+    opp = -1
     if corner == 0:
         opp = 8
     if corner == 2:
@@ -125,32 +126,20 @@ def bot_move(bot, board, bot_turn):
                     move = opposite_corner(bot_moves[0])
             else:
                 if opp == 'X':
-                    edge1 = [0,1,5,8]
-                    edge2 = [2,5,7,6]
-                    edge3 = [8,7,3,0]
-                    edge4 = [6,3,1,2]
+                    edge1 = [0,5,7]
+                    edge2 = [2,3,7]
+                    edge3 = [8,1,3]
+                    edge4 = [6,1,5]
                     if opp_moves[0] in edge1 and opp_moves[1] in edge1:
-                        if opp_moves[0] == 0 or opp_moves[1] == 0:
-                            move = 8
-                        else:
-                            move = 0
+                        move = 8
                     if opp_moves[0] in edge2 and opp_moves[1] in edge2:
-                        if opp_moves[0] == 2 or opp_moves[1] == 2:
-                            move = 6
-                        else:
-                            move = 2
+                        move = 6
                     if opp_moves[0] in edge3 and opp_moves[1] in edge3:
-                        if opp_moves[0] == 0 or opp_moves[1] == 0:
-                            move = 8
-                        else:
-                            move = 0
+                        move = 0
                     if opp_moves[0] in edge4 and opp_moves[1] in edge4:
-                        if opp_moves[0] == 2 or opp_moves[1] == 2:
-                            move = 6
-                        else:
-                            move = 2
-                    if opp_moves[1] != right_corner(opp_moves[0]) and opp_moves[1] != left_corner(opp_moves[0]):
-                        if opp_moves[0] in corners and opp_moves[1] in corners:
+                        move = 2
+                    if opp_moves[0] in corners and opp_moves[1] in corners:
+                        if opp_moves[1] != right_corner(opp_moves[0]) and opp_moves[1] != left_corner(opp_moves[0]):
                             for edge in edges:
                                 if edge in available_moves:
                                     edges.remove(edge)
@@ -161,42 +150,18 @@ def bot_move(bot, board, bot_turn):
             move = win_or_block(board, bot, opp, move, available_moves)
 
     if move == -1:
-        for corner in corners:
-            if corner not in available_moves:
-                corners.remove(corner)
-        if len(corners) != 0:
-            move = random.choice(corners)
-        else:
-            if 7 in available_moves:
-                move = 7
-            else:
-                move = random.choice(available_moves)
+        move = win_or_block(board, bot, opp, move, available_moves)
+    if move == -1:
+        move = random.choice(available_moves)
     print(f'Bot filled {bot} in slot {move + 1}!')
     return move
 
-def play():
+def play(mode,player_turn):
     board = [" "] * 9
     players = ["X", "O"]
     turn = 0
     bot_turn = 1
 
-    while True:
-        mode = input('Game Mode: Single Player or Multiplayer (s/m)? ')
-        if mode == 's' or mode == 'm':
-            if mode == 's':
-                while True:
-                    select = input('Player Selection: X or O (x/o)? ')
-                    if select == 'x':
-                        player_turn = 0
-                        break
-                    else:
-                        if select == 'o':
-                            player_turn = 1
-                            break
-                        print('Not a valid Player. Try again.')
-            break
-        else:
-            print('Not a valid Game Mode. Try again.')
     while True:
         print_board(board)
         if mode == 's':
@@ -211,11 +176,52 @@ def play():
         if check_win(board):
             print_board(board)
             print(f"{players[turn]} wins!")
+            outcome = 1
             break
         if check_tie(board):
             print_board(board)
             print("Tie!")
+            outcome = 0
             break
         turn = (turn + 1) % 2
+    return turn, outcome
 
-play()
+while True:
+    mode = input('Game Mode: Single Player or Multiplayer (s/m)? ')
+    if mode == 's' or mode == 'm':
+        if mode == 's':
+            player_turn = 0
+        else:
+            player_turn = -1
+        break
+    else:
+        print('Not a valid Game Mode. Try again.')
+
+win = 0
+tie = 0
+loss = 0
+while True:
+    turn, outcome = play(mode,player_turn)
+    if player_turn != -1:
+        if outcome == 0:
+            tie += 1
+        if outcome == 1:
+            if player_turn == turn:
+                win += 1
+            else:
+                loss += 1
+        print(f'W: {win} - T: {tie} - L: {loss}')
+        print()
+    if player_turn == 0:
+        player_turn = 1
+    else:
+        if player_turn == 1:
+            player_turn = 0
+    while True:
+        replay = input('Replay: Want to play again (y/n)? ')
+        if replay == 'y' or replay == 'n':
+            break
+        else:
+            print('Not a valid response. Try Again.')
+    if replay == 'n':
+        break
