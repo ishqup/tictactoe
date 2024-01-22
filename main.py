@@ -126,26 +126,32 @@ def bot_move(bot, board, bot_turn):
                     move = opposite_corner(bot_moves[0])
             else:
                 if opp == 'X':
-                    edge1 = [0,5,7]
-                    edge2 = [2,3,7]
-                    edge3 = [8,1,3]
-                    edge4 = [6,1,5]
-                    if opp_moves[0] in edge1 and opp_moves[1] in edge1:
-                        move = 8
-                    if opp_moves[0] in edge2 and opp_moves[1] in edge2:
-                        move = 6
-                    if opp_moves[0] in edge3 and opp_moves[1] in edge3:
-                        move = 0
-                    if opp_moves[0] in edge4 and opp_moves[1] in edge4:
-                        move = 2
-                    if opp_moves[0] in corners and opp_moves[1] in corners:
-                        if opp_moves[1] != right_corner(opp_moves[0]) and opp_moves[1] != left_corner(opp_moves[0]):
-                            for edge in edges:
-                                if edge in available_moves:
-                                    edges.remove(edge)
-                            move = random.choice(edges)
+                    if 4 in opp_moves and (opp_moves[0] in corners or opp_moves[1] in corners):
+                        if right_corner(bot_moves[0]) != opp_moves[1]:
+                            move = right_corner(bot_moves[0])
+                        else:
+                            move = left_corner(bot_moves[0])
                     else:
-                        move = win_or_block(board, bot, opp, move, available_moves)
+                        edge1 = [0, 5, 7]
+                        edge2 = [2, 3, 7]
+                        edge3 = [8, 1, 3]
+                        edge4 = [6, 1, 5]
+                        if opp_moves[0] in edge1 and opp_moves[1] in edge1:
+                            move = 8
+                        if opp_moves[0] in edge2 and opp_moves[1] in edge2:
+                            move = 6
+                        if opp_moves[0] in edge3 and opp_moves[1] in edge3:
+                            move = 0
+                        if opp_moves[0] in edge4 and opp_moves[1] in edge4:
+                            move = 2
+                        if opp_moves[0] in corners and opp_moves[1] in corners:
+                            if opp_moves[1] != right_corner(opp_moves[0]) and opp_moves[1] != left_corner(opp_moves[0]):
+                                for edge in edges:
+                                    if edge in available_moves:
+                                        edges.remove(edge)
+                                move = random.choice(edges)
+                        else:
+                            move = win_or_block(board, bot, opp, move, available_moves)
         else:
             move = win_or_block(board, bot, opp, move, available_moves)
 
